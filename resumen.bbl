@@ -1,0 +1,104 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Barnsley%
+}{%
+Barnsley%
+}{%
+{\protect \APACyear {1988}}%
+}]{%
+Barnsley}
+\APACinsertmetastar {%
+Barnsley}%
+\begin{APACrefauthors}%
+Barnsley, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{1988}.
+\newblock
+\APACrefbtitle {Fractal Everywhere} {Fractal everywhere}\ (\PrintOrdinal{1}\
+  \BEd; J.~Wiley\ \BBA {} Sons, \BEDS{}).
+\newblock
+\APACaddressPublisher{1250 Sixth Avenue, San Diego,CA 92101 Londres}{Academic
+  Press. Inc}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Mittelbach%
+\ \BBA {} et al%
+}{%
+Mittelbach%
+\ \BBA {} et al%
+}{%
+{\protect \APACyear {2004}}%
+}]{%
+companion04}
+\APACinsertmetastar {%
+companion04}%
+\begin{APACrefauthors}%
+Mittelbach, F.%
+\BCBT {}\ \BBA {} et al, M\BPBI G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2004}.
+\newblock
+\APACrefbtitle {The {LaTeX} {C}ompanion} {The {LaTeX} {C}ompanion}\
+  (\PrintOrdinal{2nd}\ \BEd).
+\newblock
+\APACaddressPublisher{Boston}{Addison-Wesley Publishing Company}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Sampieri%
+, Collado%
+\BCBL {}\ \BBA {} Lucio%
+}{%
+Sampieri%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2014}}%
+}]{%
+inv1}
+\APACinsertmetastar {%
+inv1}%
+\begin{APACrefauthors}%
+Sampieri, R\BPBI H.%
+, Collado, C\BPBI F.%
+\BCBL {}\ \BBA {} Lucio, P\BPBI B.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2014}.
+\newblock
+\APACrefbtitle {Metodolog\'ia de la investigaci\'on} {Metodolog\'ia de la
+  investigaci\'on}\ (\PrintOrdinal{6}\ \BEd; N\BPBI I.~Lopez, \BED{}).
+\newblock
+\APACaddressPublisher{Mexico}{McGraw-Hill Interamericana}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Zamora%
+}{%
+Zamora%
+}{%
+{\protect \APACyear {2003}}%
+}]{%
+zamora}
+\APACinsertmetastar {%
+zamora}%
+\begin{APACrefauthors}%
+Zamora, M\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2003}.
+\newblock
+\APACrefbtitle {Estad\'istica descriptiva e inferencial} {Estad\'istica
+  descriptiva e inferencial}\ (\PrintOrdinal{5}\ \BEd, \BVOL~1; L\BPBI S.~A.,
+  \BED{}).
+\newblock
+\APACaddressPublisher{Lima Per\'u}{Moshera S.R.L.}
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

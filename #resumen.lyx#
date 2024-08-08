@@ -1,0 +1,2416 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+%\usepackage[spanish,es-noquoting]{babel}
+\usepackage{amsfonts}
+\usepackage{times}
+
+
+
+
+
+%\usepackage{showframe}
+%\usepackage{changepage}
+%\usepackage{dsfont}
+%\usepackage{blindtext}
+%\usepackage{animate}
+%\usepackage{midpage}
+%\usepackage{pst-fractal,pst-plot}
+%\usepackage{subfigure}
+%\usepackage{graphicx,xspace}
+%\usepackage{titlesec,tikz}
+%\usepackage{asymptote}
+%\usepackage{makecell}
+%\usepackage{multirow}
+%\usepackage{pst-pdf}
+%\usepackage{bigstrut}
+%\usepackage{pst-func,numprint}
+%\usepackage{lmodern}
+%\usepackage{enumitem}
+\usepackage{booktabs}
+%\usepackage{calculus}
+%\usepackage{makeidx}
+%\usepackage{setspace}
+%\usepackage{rotating}
+%\usepackage{fp}
+\usepackage{tkz-euclide}
+%\usepackage{rotating}
+%\usepackage{colortbl}
+\usepackage[apaciteclassic]{apacite}
+
+
+
+
+%\STsetdecimalsep{{.}}
+%\spanishdecimal{.}
+
+%\usetikzlibrary{pgfplots.statistics}
+%\usetikzlibrary[pgfplots.statistics]
+%\usepgfplotslibrary[statistics]
+%\usepgfplotslibrary{statistics}
+%\usetikzlibrary{shapes.misc} % LATEX and plain TEX when using Tik Z
+%\pgfplotsset{width=7cm,compat=1.12}
+%\newcommand{\FVal}[1]{\FPeval\result{trunc(#1,2)}\result}
+
+% THEOREMS -------------------------------------------------------
+%\newtheorem{thm}{Teorema}[section]
+%\newtheorem{dem}[thm]{Demsotración}
+%\newtheorem{cor}[thm]{Corolario}\newtheorem{lem}[thm]{Lema}\newtheorem{ejem}[thm]{Ejemplo}\newtheorem{defn}[thm]{Definición}\newtheorem{obs}[thm]{Obserbación}\newtheorem{prop}[thm]{Proposición}\newcommand{\N}{\mathds{N}}
+\newcommand{\R}{\mathds{R}}
+\newcommand{\CC}{\mathds{C}}
+\newcommand{\I}{\mathds{I}}
+\newcommand{\Q}{\mathds{Q}}
+\newcommand{\X}{\mathds{X}}
+\newcommand{\Z}{\mathds{Z}}
+\newcommand{\dem}[1]{\begin{proof}#1\end{proof}}
+\newcommand{\norm}[1]{\left\Vert#1\right\Vert}
+\newcommand{\abs}[1]{\left\vert#1\right\vert}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\left<#1\right>}
+\newcommand{\co}[1]{\left[#1\right]}
+\newcommand{\cc}[1]{\left(#1\right)}
+
+
+%\begin{asydef}
+%// Global Asymptote definitions can be put here.
+%import three;
+%usepackage("bm");
+%texpreamble("\def\V#1{\bm{#1}}");
+%// One can globally override the default toolbar settings here:
+%// settings.toolbar=true;
+%import babel;
+%babel("spanish");
+%\end{asydef}
+% Adjusts the size of the wheel:
+\def\innerradius{2cm}
+\def\outerradius{2.4cm}
+
+% The main macro
+\newcommand{\wheelchart}[1]{
+    % Calculate total
+    \pgfmathsetmacro{\totalnum}{0}
+    \foreach \value/\colour/\name in {#1} {
+        \pgfmathparse{\value+\totalnum}
+        \global\let\totalnum=\pgfmathresult
+    }
+    \begin{tikzpicture}[line cap=round,line join=round]\pgfsetlinewidth{1pt}
+\draw[] (0,0) circle (\outerradius) circle (\innerradius);
+      % Calculate the thickness and the middle line of the wheel
+      \pgfmathsetmacro{\wheelwidth}{\outerradius-\innerradius}
+      \pgfmathsetmacro{\midradius}{(\outerradius+\innerradius)/2}
+
+      % Rotate so we start from the top
+      \begin{scope}[rotate=90]
+      % Loop through each value set. \cumnum keeps track of where we are in the wheel
+      \pgfmathsetmacro{\cumnum}{0}
+      \foreach \value/\colour/\name in {#1} {
+            \pgfmathsetmacro{\newcumnum}{\cumnum + \value/\totalnum*360}
+
+            % Calculate the percent value
+            \pgfmathsetmacro{\percentage}{\value/\totalnum*100}
+            % Calculate the mid angle of the colour segments to place the labels
+            \pgfmathsetmacro{\midangle}{-(\cumnum+\newcumnum)/2}
+            % This is necessary for the labels to align nicely
+            \pgfmathparse{
+               (-\midangle<180?"west":"east")
+            } \edef\textanchor{\pgfmathresult}
+            \pgfmathsetmacro\labelshiftdir{1-2*(-\midangle>180)}
+
+            % Draw the color segments. Somehow, the \midrow units got lost, so we add 'pt' at the end. Not nice...
+            \fill[\colour] (-\cumnum:\outerradius) arc (-\cumnum:-(\newcumnum):\outerradius) --
+            (-\newcumnum:\innerradius) arc (-\newcumnum:-(\cumnum):\innerradius) -- cycle;
+            \draw[] (-\cumnum:\outerradius) arc (-\cumnum:-(\newcumnum):\outerradius) --
+            (-\newcumnum:\innerradius) arc (-\newcumnum:-(\cumnum):\innerradius) -- cycle;
+            % Draw the data labels
+            \draw  [*-,thin] node [append after command={(\midangle:\midradius pt) -- (\midangle:\outerradius + 1ex) -- (\tikzlastnode)}] at (\midangle:\outerradius + 1ex) [xshift=\labelshiftdir*0.5cm,inner sep=0pt, outer sep=0pt, ,anchor=\textanchor]{\name: \pgfmathprintnumber{\percentage}\%};
+
+
+            % Set the old cumulated angle to the new value
+            \global\let\cumnum=\newcumnum
+        }
+
+      \end{scope}
+    \end{tikzpicture}
+}
+
+\usepackage[affil-it]{authblk}
+\usepackage{titleps}
+\newpagestyle{classica}{%
+	\sethead[\thepage][][E.R. Thoms, R.T. Edson, T.G. Justin]
+	{\sectiontitle}{}{\thepage}
+	\setfoot[][][]
+    {}{}{}
+}
+
+
+\title{\vspace{3cm}
+The Triangulation of Titling Data in Non-Linear Gaussian Fashion via $\rho$ Series
+\thanks{No procrastination}
+}
+\date{\today}
+\author{Yossi Farjoun
+\thanks{Electronic address: \texttt{yfarjoun@math.mit.edu}; Corresponding author}}
+\affil{G. Mill\'an Institute of Fluid Dynamics,\\ 
+Nanoscience and Industrial	Mathematics, Universidad Carlos III de Madrid, Spain}
+
+\author{John C. Neu
+\thanks{Electronic address: \texttt{neu@math.berkeley.edu}}}
+\affil{Department of Mathematics, University of California, Berkeley}
+
+\usepackage{titlepic}
+\usepackage{eso-pic}
+
+
+
+
+\usepackage{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+\providecommand{\definitionname}{Definición}
+\providecommand{\theoremname}{Teorema}
+\end_preamble
+\use_default_options false
+\begin_modules
+theorems-ams
+\end_modules
+\maintain_unincluded_children false
+\language spanish
+\language_package default
+\inputencoding utf8
+\fontencoding T1
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2.5cm
+\bottommargin 2.5cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style french
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+AddToShipoutPictureFG*
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+AtPageCenter
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{tikzpicture}[inner sep=0, remember picture, overlay]
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+node[shift={(26mm,-1.3cm)}] at (current page.north west)[below right]{
+\end_layout
+
+\begin_layout Plain Layout
+
+Comm.
+ Arts PhysArt Vol 1 Núm 3, pgs 511-519 (2023)
+\end_layout
+
+\begin_layout Plain Layout
+
+};
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+node[shift={(-26mm,-1.2cm)}] at (current page.north east)[below left]
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{minipage}{14em}
+\backslash
+centering
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+rule{
+\backslash
+linewidth}{1pt}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{0.01cm}
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\backslash
+bf Comunication in Arts and PhysArt}
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{0.2cm}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=1.5cm]{logo.pdf}
+\backslash
+
+\backslash
+ 					
+\end_layout
+
+\begin_layout Plain Layout
+
+ Springer Verlag 2023
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-1.9cm}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+rule{
+\backslash
+linewidth}{1pt} 				
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{minipage} 
+\end_layout
+
+\begin_layout Plain Layout
+
+}; 		
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tikzpicture}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+maketitle
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+addtocounter{page}{238}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+flushbottom%convert -density 300 *.pdf -quality 100 -resize 45% -set filename:bas
+ename "%[basename]" "%[filename:basename].png"
+\end_layout
+
+\begin_layout Plain Layout
+
+%asy -V -f pdf w1 
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Abstract
+The Mandelbrot set M is "self-similar" about any Misiurewicz point c in
+ the sense that if we examine a neighborhood of c in M with a very powerful
+ microscope, and then increase the magnification by a carefully chosen factor,
+ the picture will be unchanged except for a rotation.
+ 
+\begin_inset Formula 
+\[
+\int_{w}^{3}f\left(x\right)dx=\alpha
+\]
+
+\end_inset
+
+The corresponding Julia set Jc is also "self-similar" in the same sense,
+ with the same magnification factor.
+ Moreover, the two sets M and Jc are "similar" in the sense that if we use
+ a very powerful microscope to look at M and Jc , both focused at c, the
+ structures we see look like very much the same.
+\end_layout
+
+\begin_layout Abstract
+Palabras Claves: Query optimisation, Cost Model, Selectivity Estimation.
+ 
+\end_layout
+
+\begin_layout Section
+Introducción
+\end_layout
+
+\begin_layout Standard
+La proporción áurea se encuentra en muchos elementos naturales.
+ El ejemplo más evidente es la espiral dorada de la cáscara de un nautilus,
+ pero también la podemos ver en las hojas y el grosor de las ramas, las
+ semillas de los girasoles, la forma de las piñas, el caparazón de los moluscos,
+ los cuernos de las cabras 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "companion04"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Wwwww
+\end_layout
+
+\begin_layout Definition
+Población es un conjunto de personas, cosas, animales, etc.
+ con características observables (cualitativa o cuantitativa), según 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "inv1"
+literal "false"
+
+\end_inset
+
+
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+A cada elemento de la población se denomina 
+\series bold
+unidad elemental o unidad estadística
+\series default
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Definition
+Muestra es un subconjunto de la población, que pueda representar adecuadamente
+ a la población, seleccionada de manera que cada elemento de la población
+ tiene la misma posibilidad de pertenecer a este subconjunto.
+ 
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+...se debe incidir entre investigar toda la población o solo una parte de ella.
+ El primer procedimiento es denominado 
+\series bold
+censo
+\series default
+ y el segundo es llamado 
+\series bold
+muestreo
+\series default
+.
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "p.~2"
+key "zamora"
+literal "false"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Section
+Variables estadísticas
+\end_layout
+
+\begin_layout Definition
+Una variable estadística, es una 
+\begin_inset Quotes fls
+\end_inset
+
+
+\series bold
+\emph on
+característica
+\series default
+ o 
+\series bold
+cualidad
+\series default
+ de los elementos de una población, que se desea conocer
+\emph default
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+"
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "p.~7"
+key "inv1"
+literal "false"
+
+\end_inset
+
+ que generan datos.
+ Por ejemplo edad, estado civil, temperatura, etc.
+ 
+\end_layout
+
+\begin_layout Subsection
+Variables cualitativas
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+Es la característica cuyos valores se expresan en escalas nominal y ordinal
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "p.~8"
+key "zamora"
+literal "false"
+
+\end_inset
+
+, con las cuales no se pueden realizar operaciones algebraicas.
+ 
+\end_layout
+
+\begin_layout Definition
+Las 
+\series bold
+Variables cualitativas nominales
+\series default
+, son variables cualitativas, que no pueden ser jerarquizados u ordenados.
+ Por ejemplo estado civil, profesión, sexo, etc.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Definition
+Las 
+\series bold
+Variables cualitativas ordinales
+\series default
+, son variables cualitativas, que pueden ser jerarquizados u ordenados.
+ Por ejemplo nivel de instrucción, orden de méritos, etc 
+\end_layout
+
+\begin_layout Subsection
+Variables cuantitativas
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+Es la característica cuyos valores se expresan en escalas de intervalos
+ o de razón
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "p.~8"
+key "zamora"
+literal "false"
+
+\end_inset
+
+, con las cuales pueden se pueden realizar operaciones algebraicas.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename asy/sets.pdf
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+www
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Definition
+Las 
+\series bold
+Variables cuantitativas continuas
+\series default
+, son aquellas variables que pueden ser representados por los números racionales
+ 
+\begin_inset Formula $\mathbb{Q}$
+\end_inset
+
+, 
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+...que puede tomar cualquier valor en el intervalo considerado
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+after "p.~8"
+key "zamora"
+literal "false"
+
+\end_inset
+
+ Por ejemplo la temperatura, el volumen, el peso, etc.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement !ht
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename asy/continua.pdf
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Captionwww
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:enter-label"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+www
+\end_layout
+
+\begin_layout Section
+Organización de datos
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+La distribución de frecuencias
+\emph default
+, también llamada 
+\emph on
+tabla de frecuencias
+\emph default
+, es una herramienta estadística muy útil para organizar un grupo de datos
+ u observaciones, entre las frecuencias usuales tenemos a la 
+\series bold
+frecuencia absoluta
+\series default
+ 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+ que es el número de veces que se repite un valor en un conjunto de datos,
+ la suma de todas ellas es igual al número de datos 
+\begin_inset Formula $\sum_{i=1}^{m}=n$
+\end_inset
+
+, donde 
+\begin_inset Formula $m\leq n$
+\end_inset
+
+ es el número de clases.
+ La 
+\series bold
+frecuencia acumulada mayor que
+\series default
+ 
+\begin_inset Formula $F_{i}$
+\end_inset
+
+ es la suma de las frecuencias absolutas desde la primera hasta la frecuencia
+ 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+ es decir 
+\begin_inset Formula $F_{i}=\sum_{j=1}^{i}f_{j}=f_{1}+f_{2}+\cdots+f_{i}$
+\end_inset
+
+ observe que 
+\begin_inset Formula $F_{m}=\sum_{i=1}^{m}f_{i}=n$
+\end_inset
+
+.
+ La 
+\series bold
+frecuencia acumulada menor que
+\series default
+ 
+\begin_inset Formula $F_{i}^{*}$
+\end_inset
+
+ es la suma de las frecuencias absolutas desde 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+ hasta la frecuencia absoluta 
+\begin_inset Formula $f_{m}$
+\end_inset
+
+ es decir 
+\begin_inset Formula $F_{i}=\sum_{j=i}^{m}f_{j}=f_{i}+f_{i+1}+\cdots+f_{m}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+La 
+\series bold
+frecuencia relativa
+\series default
+ 
+\begin_inset Formula $h_{i}=\frac{f_{i}}{n}$
+\end_inset
+
+, observe que 
+\begin_inset Formula $\sum_{i=1}^{m}h_{i}=\sum_{i=1}^{m}\frac{f_{wwwwwwwww-------------------i}}{n}=\frac{f_{1}+f_{2}+\cdots+f_{m}}{n}=\frac{n}{n}$
+\end_inset
+
+, donde 
+\begin_inset Formula $m$
+\end_inset
+
+ es el número de clases La 
+\series bold
+frecuencia relativa acumulada menor que
+\series default
+ 
+\begin_inset Formula $H_{i}=\frac{F_{i}}{n}$
+\end_inset
+
+, se tiene que 
+\begin_inset Formula $H_{m}=1$
+\end_inset
+
+ La 
+\series bold
+frecuencia relativa acumulada mayor que
+\series default
+ 
+\begin_inset Formula $H_{i}^{*}=\frac{F_{i}^{*}}{n}$
+\end_inset
+
+, observe que 
+\begin_inset Formula $H_{1}^{*}=n$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+La 
+\series bold
+frecuencia relativa porcentual
+\series default
+ 
+\begin_inset Formula $h_{i}\%=100h_{i}$
+\end_inset
+
+ la propiedad es que la suma de todas ellas nos genera el 
+\begin_inset Formula $100\%$
+\end_inset
+
+ es decir 
+\begin_inset Formula $\sum_{i=1}^{m}h_{i}\%=100\%$
+\end_inset
+
+, 
+\begin_inset Formula $m$
+\end_inset
+
+ es el número de clases La 
+\series bold
+frecuencia relativa acumulada menor que porcentual
+\series default
+ 
+\begin_inset Formula $H_{i}\%=100H_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $H_{m}=100\%$
+\end_inset
+
+ La 
+\series bold
+frecuencia relativa acumulada mayor que porcentual
+\series default
+ 
+\begin_inset Formula $H_{i}^{*}\%=100H_{i}$
+\end_inset
+
+, 
+\begin_inset Formula $H_{1}^{*}\%=100\%$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Datos no agrupados
+\end_layout
+
+\begin_layout Standard
+Esta distribución de frecuencias se utiliza cuando los datos son cualitativas
+ nominales u ordinales y cuantitativos discretos solo si estos no tienen
+ muchas clases, en caso contrario se utilizara la siguiente distribución
+ de frecuencias para datos agrupados.
+ Aquellos datos que siguen una jerarquía deben ser ordenados en forma ascendente.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement ht!
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\sum_{1}^{3}f\left(x\right)dx=\lim_{\triangle x\to\infty}f\left(x\right)\triangle x$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $w$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+w
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Datos tabulados de una variable cuantitativa discreta
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "11"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Datos agrupados 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "11"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename asy/3dwww.pdf
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+wwwww
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename asy/plane2.pdf
+	lyxscale 90
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+www
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+wwwwwwww
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Esta distribución se usa cuando la variable es cuantitativa continua o cuando
+ el número de valores distintos de una variable cuantitativa discreta es
+ demasiado grande (mas de 20).
+ Se halla el número de intervalos que agruparan a los datos 
+\begin_inset Formula $m$
+\end_inset
+
+, lo cual esta restringido entre 5 y 20, 
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+muchos intervalos pueden complicar los innecesariamente los cálculos de
+ las medidas descriptivas y pocos intervalos podrían omitir características
+ importantes de los datos
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zamora"
+literal "false"
+
+\end_inset
+
+.
+ Determinar el rango 
+\begin_inset Formula $R=x_{max}-x_{min}$
+\end_inset
+
+, determinar el número de intervalos por el método de 
+\begin_inset Formula $k=\sqrt{n}$
+\end_inset
+
+ si 
+\begin_inset Formula $25\leq n\leq100$
+\end_inset
+
+ o 
+\begin_inset Formula $k=1+3.3\log n$
+\end_inset
+
+, 
+\begin_inset Formula $n\geq10$
+\end_inset
+
+ redondeado al entero inmediato superior.
+ Determinar la amplitud interválica 
+\begin_inset Formula $c$
+\end_inset
+
+, dividiendo el rango por el número de intervalos 
+\begin_inset Formula $c=\frac{R}{k}$
+\end_inset
+
+ si 
+\begin_inset Formula $c$
+\end_inset
+
+ no es exacta en el número de decimales de los datos, entonces 
+\begin_inset Formula $c$
+\end_inset
+
+ se aproxima por 
+\emph on
+exceso
+\emph default
+ de manera que se cubra todo el rango
+\end_layout
+
+\begin_layout Standard
+Si los datos son enteros 
+\begin_inset Formula $c$
+\end_inset
+
+, es entero.
+ si los datos tienen un decimal , 
+\begin_inset Formula $c$
+\end_inset
+
+ tiene un decimal, etc.
+ Por ejemplo , si los datos tienen do decimales y si 
+\begin_inset Formula $c=\frac{R}{k}=5.3416$
+\end_inset
+
+, se elige 
+\begin_inset Formula $c=5.35$
+\end_inset
+
+ (no 5.34)
+\end_layout
+
+\begin_layout Standard
+Determinar los extremos de los intervalos de la siguiente manera 
+\begin_inset Formula $I_{1}=[x_{min},x_{min}+c[$
+\end_inset
+
+, 
+\begin_inset Formula $I_{2}=[x_{min}+c,x_{min}+2c[$
+\end_inset
+
+, ...
+ 
+\begin_inset Formula $I_{k}=[x_{min}+\cc{k+1}c,x_{min}+\cc{k}c[$
+\end_inset
+
+.
+ El ultimo intervalo se cierra por la derecha.
+ Esto se debe a que si la división 
+\begin_inset Formula $\frac{R}{k}$
+\end_inset
+
+ es exacta en el número de decimales de los datos, entonces, 
+\begin_inset Formula $x_{max}=x_{min}+kc$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement ht!
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+wwwwww 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Datos tabulados de una variable cuantitativa continua
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "22"
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Gráficos estadísticos
+\end_layout
+
+\begin_layout Definition
+Sectores circulares son utilizados para representar todas las distribuciones,
+ 
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+los datos de cada categoría se representa por un sector circular cuyo ángulo
+ central es 
+\begin_inset Formula $\alpha_{i}=360^{\circ}h_{i}$
+\end_inset
+
+
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zamora"
+literal "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+www
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+wwwww
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%Por ejemplo considerando el Cuadro 
+\backslash
+ref{11} tenemos que $
+\backslash
+alpha_1=360^
+\backslash
+circ h_1=360^
+\backslash
+circ
+\backslash
+cdot
+\backslash
+STtag{t1}=
+\backslash
+FVal{
+\backslash
+STtag{t1}*360}^
+\backslash
+circ$, $
+\backslash
+alpha_2=
+\backslash
+FVal{
+\backslash
+STtag{t2}*360}^
+\backslash
+circ$, $
+\backslash
+alpha_3=
+\backslash
+FVal{
+\backslash
+STtag{t3}*360}^
+\backslash
+circ$, $
+\backslash
+alpha_4=
+\backslash
+FVal{
+\backslash
+STtag{t4}*360}^
+\backslash
+circ$, $
+\backslash
+alpha_5=
+\backslash
+FVal{
+\backslash
+STtag{t5}*360}^
+\backslash
+circ$, $
+\backslash
+alpha_6=
+\backslash
+FVal{
+\backslash
+STtag{t6}*360}^
+\backslash
+circ$, $
+\backslash
+alpha_7=
+\backslash
+FVal{
+\backslash
+STtag{t7}*360}^
+\backslash
+circ$ y $
+\backslash
+alpha_8=
+\backslash
+FVal{
+\backslash
+STtag{t8}*360}^
+\backslash
+circ$.
+ Refiérase a la Figura 
+\backslash
+ref{44}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename asy/round.pdf
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+www
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename asy/bar.pdf
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+www
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+www
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Definition
+Gráfico de barras, este tipo de gráficos son utilizados cuando la variable
+ es cualitativa 
+\begin_inset Quotes fls
+\end_inset
+
+las barras se dibujan dejando un espacio entre ellas
+\begin_inset Quotes frs
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zamora"
+literal "false"
+
+\end_inset
+
+, de altura igual a la frecuencia absoluta o relativa, en caso de ser ordinales,
+ las clases se ordenan de izquierda a derecha.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Definition
+Gráfica de bastón específicamente para variables cuantitativas discretas,
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+consiste en trazar en cada valor distinto de la variable, segmentos de recta
+ que proporcionen a su frecuencia
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zamora"
+literal "false"
+
+\end_inset
+
+.
+ Por ejemplo se tiene una representación de uno de estos, para la distribución
+ de frecuencias del Cuadro 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "11"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ en la Figura 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "44"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Definition
+Histograma de frecuencias solo cuando la variable es cuantitativa continua.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "zamora"
+literal "false"
+
+\end_inset
+
+ 
+\begin_inset Quotes fls
+\end_inset
+
+
+\emph on
+Es gráfica de barras rectangulares verticales juntas.
+ La base de cada barrages proporcional a la amplitud del intervalo, y la
+ altura es proporcional a sus frecuencia (absoluta, relativa o porcentaje)
+\emph default
+
+\begin_inset Quotes frs
+\end_inset
+
+.
+ En base esto se consigue otro gráfico llamado el 
+\emph on
+polígono de frecuencias
+\emph default
+ que consiste en unir los puntos medios de las bases superiores de las rectángul
+os que componen el histogram de frecuencias.
+ Se cierra en amos extremos en las marcas de clase adyacentes de frecuencia
+ cero 
+\end_layout
+
+\begin_layout Theorem
+wwwwwwwww 
+\end_layout
+
+\begin_layout Section
+Estadígrafos
+\end_layout
+
+\begin_layout Subsection
+Medidas de tendencia central
+\end_layout
+
+\begin_layout Subsubsection
+Media
+\end_layout
+
+\begin_layout Standard
+En el caso de 
+\begin_inset Formula $n$
+\end_inset
+
+ datos no tabulados se tiene 
+\begin_inset Formula $\overline{x}=\frac{\sum_{i=1}^{n}x_{i}}{n}$
+\end_inset
+
+ en el caso de 
+\begin_inset Formula $n$
+\end_inset
+
+ datos tabulados en 
+\begin_inset Formula $m$
+\end_inset
+
+ clases se tiene 
+\begin_inset Formula $\overline{x}=\frac{\sum_{i=1}^{m}f_{i}x_{i}}{n}$
+\end_inset
+
+ esto es valido para datos agrupados considerando las 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ como las marcas de clase de cada intervalo es decir 
+\begin_inset Formula $\overline{x}=\frac{\sum_{i=1}^{m}f_{i}m_{i}}{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Mediana
+\end_layout
+
+\begin_layout Standard
+Es el datos que ocupa la posición central de los datos ordenadas en forma
+ creciente.
+ En el caso de datos no tabulados si 
+\begin_inset Formula $n$
+\end_inset
+
+ es impar la mediana es el dato de la posición 
+\begin_inset Formula $\frac{n+1}{2}$
+\end_inset
+
+, 
+\begin_inset Formula $x_{\frac{n+1}{2}}$
+\end_inset
+
+ en caso contrario si 
+\begin_inset Formula $n$
+\end_inset
+
+ es par, se interpolan los datos centrales es decir 
+\begin_inset Formula $Me=\frac{x_{\frac{n}{2}}+x_{\frac{n}{2}+1}}{2}$
+\end_inset
+
+.
+ En el caso de datos tabulados se sigue el mismo procedimiento anterior.
+ En el caso de datos agrupados la mediana es un caso particular del cuartil
+ 
+\begin_inset Formula $Q_{2}$
+\end_inset
+
+, el decil 
+\begin_inset Formula $D_{5}$
+\end_inset
+
+ o el percentil 
+\begin_inset Formula $P_{50}$
+\end_inset
+
+ es decir 
+\begin_inset Formula $Me=Q_{2}=D_{5}=P_{10}=L_{i}+\frac{\frac{n}{2}-F_{i-1}}{f_{i}}c$
+\end_inset
+
+ donde 
+\begin_inset Formula $c$
+\end_inset
+
+ es la amplitud interválica, 
+\begin_inset Formula $L_{i}$
+\end_inset
+
+ es el límite inferior del intervalo donde esta el la posición 
+\begin_inset Formula $\frac{n}{2}$
+\end_inset
+
+, 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+ la frecuencia absoluta correspondiente a este intervalo, 
+\begin_inset Formula $F_{i-1}$
+\end_inset
+
+ la frecuencia acumulada anterior a este intervalo.
+\end_layout
+
+\begin_layout Subsubsection
+Moda
+\end_layout
+
+\begin_layout Standard
+El es dato o conjunto de datos que mas se repiten.
+ En el caso de datos tabulados es la clase con mayor frecuencia absoluta.
+ En el caso de datos agrupados es 
+\begin_inset Formula $Mo=L_{i}+\co{\frac{f_{i}-f_{i-1}}{\cc{f_{i}-f_{i-1}}+\cc{f_{i}-f_{i-1}}}}c$
+\end_inset
+
+, donde 
+\begin_inset Formula $c$
+\end_inset
+
+ es la amplitud interválica, 
+\begin_inset Formula $L_{i}$
+\end_inset
+
+ límite inferior de intervalo que contiene a la mayor frecuencia, 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+ la mayor frecuencia absoluta, 
+\begin_inset Formula $f_{i-1}$
+\end_inset
+
+ y 
+\begin_inset Formula $f_{i+1}$
+\end_inset
+
+ son las frecuencias absolutas adyacentes a 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Medidas de dispersion
+\end_layout
+
+\begin_layout Subsubsection
+Varianza y desviación estándar
+\end_layout
+
+\begin_layout Standard
+En el caso de datos no tabulados la varianza es 
+\begin_inset Formula $S_{x}^{2}=\frac{\sum_{i=1}^{n}\cc{x_{i}-\overline{x}}^{2}}{n-1}$
+\end_inset
+
+, 
+\begin_inset Formula $n$
+\end_inset
+
+ es el número de datos.
+ En el caso de datos tabulados se tiene que 
+\begin_inset Formula $S_{x}^{2}=\frac{\sum_{i=1}^{m}f_{i}\cc{x_{i}-\overline{x}}^{2}}{n-1}$
+\end_inset
+
+ donde 
+\begin_inset Formula $m$
+\end_inset
+
+ es el número de clases y 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ la clase correspondiente.
+ En el caso de datos agrupados es 
+\begin_inset Formula $S_{x}^{2}=\frac{\sum_{i=1}^{m}f_{i}\cc{x_{i}-\overline{x}}^{2}}{n-1}$
+\end_inset
+
+ donde 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ es la marca de clase de cada uno de los 
+\begin_inset Formula $m$
+\end_inset
+
+ intervalos.
+ En todos los casos la desviación estándar es la raíz cuadrada de la varianza
+ 
+\begin_inset Formula $S_{x}=\sqrt{S_{x}^{2}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Coeficiente de variacióncd cd
+\end_layout
+
+\begin_layout Standard
+Este estadígrafo nos dice que tan dispersos están los datos uno de otros,
+ obedece a siguiente formula 
+\begin_inset Formula $CV=100\frac{S_{x}}{\overline{x}}\%$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Medidas de posición
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+%referencial textual
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+Los cuantiles son los estídagrafos para medir la posición entre las mas
+ importantes se tiene a los cuartiles, los deciles y los percentiles, las
+ cuales dividen a los datos ordenados en forma ascendente, en cuatro, diez,
+ cien, partes iguales respectivamente, en el caso de datos no agrupados
+ se tiene el dato que ocupa en la posición 
+\begin_inset Formula $\frac{\left(n+1\right)j}{N}$
+\end_inset
+
+.
+ En el caso de datos agrupados se tiene 
+\begin_inset Formula $C_{j}=L_{i}+c\frac{\frac{jn}{N}-F_{i-1}}{f_{i}}$
+\end_inset
+
+.
+ donde 
+\begin_inset Formula $n$
+\end_inset
+
+ el número de datos 
+\begin_inset Formula $N$
+\end_inset
+
+ es el número de distribuciones en que se divide el cuantil, 
+\begin_inset Formula $j$
+\end_inset
+
+ es el cuantil, 
+\begin_inset Formula $F_{i-1}$
+\end_inset
+
+ es la frecuencia acumulada anterior a intervalo que contiene al de la posición
+ 
+\begin_inset Formula $\frac{jn}{N}$
+\end_inset
+
+, 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+ es la frecuencia correspondiente a este intervalo, 
+\begin_inset Formula $L_{i}$
+\end_inset
+
+ es el límite inferior de este intervalo y 
+\begin_inset Formula $c$
+\end_inset
+
+ es la amplitud interválica.
+\end_layout
+
+\begin_layout Section
+Práctica guiada
+\end_layout
+
+\begin_layout Standard
+(30 minutos) incluye dos momentos: 
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Monitoreo:
+\series default
+ el profesor supervisa que todos los grupos de estudiantes elaboren las
+ respectivas tablas de distribución de frecuencias y los gráficos estadísticos
+ relacionados, y colaboren mutuamente en el proceso deduciendo ideas principales
+ y secundarais infiriendo otras, implícitas en el prontuario.
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+Diagnóstico de dificultades en el aprendizaje:
+\series default
+ recogidos la practica grupal en los papelotes y las respectivas respuestas,
+ el docente determinará el número de estudiantes que evidencian errores
+ en las respuestas, de ubicarse que hay una cantidad considerable de alumnos
+ con equivocaciones o no hayan respondido, se realizará un diagnóstico y
+ discusión sobre las dificultades encontradas y luego se hará un reforzamiento
+ de aquellos temas no comprendidos.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Preguntas inferenciales: 
+\end_layout
+
+\begin_layout Itemize
+¿Que tipo de distribución de frecuencias se de utilizar en cada conjunto
+ de datos? 
+\end_layout
+
+\begin_layout Itemize
+Es importante para usted el uso de la tabla de distribución de frecuencias.
+ ¿Por qué? 
+\end_layout
+
+\begin_layout Itemize
+¿Por qué es importante los gráficos estadísticos? 
+\end_layout
+
+\begin_layout Itemize
+¿Cuáles son las bondades de la técnica exposición–discusión? 
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Barnsley"
+literal "false"
+
+\end_inset
+
+
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "www"
+options "apacann"
+
+\end_inset
+
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+raggedright
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_body
+\end_document
